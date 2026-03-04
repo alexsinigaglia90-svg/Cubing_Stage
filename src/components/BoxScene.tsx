@@ -9,25 +9,51 @@ interface BoxSceneProps {
 }
 
 function PackedItem({ item, highlighted }: { item: Placement; highlighted: boolean }) {
+  const makeMaterial = () => (
+    <meshStandardMaterial
+      color={item.color}
+      emissive={highlighted ? '#7cb8ff' : '#000000'}
+      emissiveIntensity={highlighted ? 0.45 : 0}
+      transparent
+      opacity={item.visualType === 'shoe' ? (highlighted ? 1 : 0.92) : 0.9}
+      metalness={item.visualType === 'shoe' ? 0.32 : 0.18}
+      roughness={item.visualType === 'cap' ? 0.55 : 0.3}
+    />
+  );
+
+  const renderLabel = () => {
+    if (item.visualType === 'shoe') return item.id.replace('shoe-', '#');
+    if (item.visualType === 'tshirt') return 'TEE';
+    if (item.visualType === 'accessory') return 'ACC';
+    return 'CAP';
+  };
+
   return (
-    <mesh position={[item.position[0], item.position[2], item.position[1]]} scale={highlighted ? 1.04 : 1}>
-      <boxGeometry args={[item.size[0], item.size[2], item.size[1]]} />
-      <meshStandardMaterial
-        color={item.color}
-        emissive={highlighted ? '#7cb8ff' : '#000000'}
-        emissiveIntensity={highlighted ? 0.45 : 0}
-        transparent
-        opacity={item.category === 'shoe-box' ? (highlighted ? 1 : 0.92) : 0.28}
-        metalness={0.32}
-        roughness={0.24}
-      />
-      <Edges color="#e6eefc" threshold={14} />
-      {item.category === 'shoe-box' ? (
+    <group position={[item.position[0], item.position[2], item.position[1]]} scale={highlighted ? 1.04 : 1}>
+      {item.visualType === 'cap' ? (
+        <>
+          <mesh position={[0, -item.size[2] * 0.12, 0]}>
+            <cylinderGeometry args={[item.size[0] * 0.4, item.size[0] * 0.4, item.size[2] * 0.12, 28]} />
+            {makeMaterial()}
+          </mesh>
+          <mesh position={[0, item.size[2] * 0.2, 0]}>
+            <cylinderGeometry args={[item.size[0] * 0.22, item.size[0] * 0.3, item.size[2] * 0.55, 28, 1, true]} />
+            {makeMaterial()}
+          </mesh>
+        </>
+      ) : (
+        <mesh>
+          <boxGeometry args={[item.size[0], item.size[2], item.size[1]]} />
+          {makeMaterial()}
+          <Edges color="#e6eefc" threshold={14} />
+        </mesh>
+      )}
+      {item.visualType === 'shoe' || item.visualType === 'cap' || item.visualType === 'tshirt' ? (
         <Html distanceFactor={11} center>
-          <div className={`cube-label ${highlighted ? 'active' : ''}`}>{item.id.replace('shoe-', '#')}</div>
+          <div className={`cube-label ${highlighted ? 'active' : ''}`}>{renderLabel()}</div>
         </Html>
       ) : null}
-    </mesh>
+    </group>
   );
 }
 

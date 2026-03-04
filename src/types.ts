@@ -17,6 +17,7 @@ export interface OrderRecipe {
 export interface Placement {
   id: string;
   category: Category;
+  visualType: 'shoe' | 'tshirt' | 'accessory' | 'cap';
   size: [number, number, number];
   position: [number, number, number];
   color: string;
