@@ -21,3 +21,13 @@ npm run dev
 ```bash
 npm run build
 ```
+
+## Deploy (Cloudflare Pages)
+
+Als je een witte pagina ziet op `*.pages.dev`, controleer deze instellingen in Cloudflare Pages:
+
+- Build command: `npm run build`
+- Build output directory: `dist`
+- Node version: `20` (aanrader)
+
+Deze repo gebruikt nu relatieve asset-paden (`base: './'`) zodat deploys op root én subpad correct laden.
