@@ -9,15 +9,15 @@ interface BoxSceneProps {
 }
 
 function PackedItem({ item, highlighted }: { item: Placement; highlighted: boolean }) {
-  const makeMaterial = () => (
+  const makeMaterial = (colorOverride?: string, roughnessOverride?: number) => (
     <meshStandardMaterial
-      color={item.color}
+      color={colorOverride ?? item.color}
       emissive={highlighted ? '#7cb8ff' : '#000000'}
       emissiveIntensity={highlighted ? 0.45 : 0}
       transparent
       opacity={item.visualType === 'shoe' ? (highlighted ? 1 : 0.92) : 0.9}
       metalness={item.visualType === 'shoe' ? 0.32 : 0.18}
-      roughness={item.visualType === 'cap' ? 0.55 : 0.3}
+      roughness={roughnessOverride ?? (item.visualType === 'cap' ? 0.55 : 0.3)}
     />
   );
 
@@ -41,6 +41,53 @@ function PackedItem({ item, highlighted }: { item: Placement; highlighted: boole
             {makeMaterial()}
           </mesh>
         </>
+      ) : item.visualType === 'tshirt' ? (
+        <>
+          <mesh>
+            <boxGeometry args={[item.size[0] * 0.56, item.size[2] * 0.82, item.size[1] * 0.72]} />
+            {makeMaterial('#70dff4', 0.62)}
+            <Edges color="#e8f8ff" threshold={12} />
+          </mesh>
+          <mesh position={[-item.size[0] * 0.34, 0, item.size[1] * 0.12]} rotation={[0, 0, Math.PI / 8]}>
+            <boxGeometry args={[item.size[0] * 0.28, item.size[2] * 0.68, item.size[1] * 0.36]} />
+            {makeMaterial('#5fd0e8', 0.66)}
+            <Edges color="#e8f8ff" threshold={12} />
+          </mesh>
+          <mesh position={[item.size[0] * 0.34, 0, item.size[1] * 0.12]} rotation={[0, 0, -Math.PI / 8]}>
+            <boxGeometry args={[item.size[0] * 0.28, item.size[2] * 0.68, item.size[1] * 0.36]} />
+            {makeMaterial('#5fd0e8', 0.66)}
+            <Edges color="#e8f8ff" threshold={12} />
+          </mesh>
+          <mesh position={[0, item.size[2] * 0.2, item.size[1] * 0.28]}>
+            <torusGeometry args={[item.size[0] * 0.1, item.size[2] * 0.08, 12, 24]} />
+            {makeMaterial('#38b8d3', 0.5)}
+          </mesh>
+        </>
+      ) : item.visualType === 'accessory' ? (
+        <>
+          <mesh>
+            <boxGeometry args={[item.size[0] * 0.92, item.size[2] * 0.86, item.size[1] * 0.92]} />
+            {makeMaterial('#f4ac33', 0.42)}
+            <Edges color="#fff0cf" threshold={12} />
+          </mesh>
+          <mesh position={[0, item.size[2] * 0.52, 0]}>
+            <torusGeometry args={[item.size[0] * 0.2, item.size[2] * 0.07, 10, 20]} />
+            {makeMaterial('#ffe4a7', 0.3)}
+          </mesh>
+        </>
+      ) : item.visualType === 'shoe' ? (
+        <>
+          <mesh position={[0, -item.size[2] * 0.08, 0]}>
+            <boxGeometry args={[item.size[0], item.size[2] * 0.76, item.size[1]]} />
+            {makeMaterial('#477ed9', 0.36)}
+            <Edges color="#e6eefc" threshold={14} />
+          </mesh>
+          <mesh position={[0, item.size[2] * 0.34, 0]}>
+            <boxGeometry args={[item.size[0] * 1.02, item.size[2] * 0.18, item.size[1] * 1.02]} />
+            {makeMaterial('#83aef0', 0.28)}
+            <Edges color="#ecf4ff" threshold={14} />
+          </mesh>
+        </>
       ) : (
         <mesh>
           <boxGeometry args={[item.size[0], item.size[2], item.size[1]]} />
@@ -48,7 +95,7 @@ function PackedItem({ item, highlighted }: { item: Placement; highlighted: boole
           <Edges color="#e6eefc" threshold={14} />
         </mesh>
       )}
-      {item.visualType === 'shoe' || item.visualType === 'cap' || item.visualType === 'tshirt' ? (
+      {item.visualType === 'shoe' || item.visualType === 'cap' ? (
         <Html distanceFactor={11} center>
           <div className={`cube-label ${highlighted ? 'active' : ''}`}>{renderLabel()}</div>
         </Html>
